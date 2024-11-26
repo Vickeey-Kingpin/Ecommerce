@@ -8,6 +8,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from .forms import CheckoutForm
 
 # Create your views here.
+def check_form_validity(values):
+    valid = True
+    for field in values:
+        if field == '':
+            valid=False
+    return valid
+
 def register(request):
     if request.method == 'POST':
         firstname = request.POST['firstname']
@@ -147,59 +154,69 @@ def remove_item_from_cart(request,pk):
 class CheckOutView(View):
     def get(self,*args,**kwargs):
         form = CheckoutForm()
-        # try:
-        # order = Order.objects.get(user=self.request.user,ordered=False)
-        context = {
-        'form':form,
-        }  
-        shipping_address_qs = Address.objects.filter(user=self.request.user,default=True,address_type='Shipping') 
-        if shipping_address_qs.exists():
-            context.update({'default_shipping_address':shipping_address_qs[0]})         
-        return render(self.request, 'checkout.html',context)
-        # except ObjectDoesNotExist:
-        #     messages.warning(self.request, 'Order does not exist')
-        #     return redirect('checkout')
+        try:
+            order = Order.objects.get(user=self.request.user,ordered=False)
+            context = {
+            'form':form,
+            }  
+            shipping_address_qs = Address.objects.filter(user=self.request.user,default=True,address_type='Shipping') 
+            if shipping_address_qs.exists():
+                context.update({'default_shipping_address':shipping_address_qs[0]})         
+            return render(self.request, 'checkout.html',context)
+        except ObjectDoesNotExist:
+            messages.warning(self.request, 'Order does not exist')
+            return redirect('checkout')
 
     def post(self, *args,**kwargs):
         form = CheckoutForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user,ordered=False)
 
-        
-        if form.is_valid():
-            use_default_shipping = form.cleaned_data.get('use_default_shipping')
-            if use_default_shipping:
-                print('Using the default shippng address')
-                address_qs = Address.objects.filter(user=self.request.user,address_type='Shipping',default=True)
-                if address_qs.exists():
-                    shipping_address = address_qs[0]
-                    
+            if form.is_valid():
+                use_default_shipping = form.cleaned_data.get('use_default_shipping')
+                if use_default_shipping:
+                    print('Using the default shippng address')
+                    address_qs = Address.objects.filter(user=self.request.user,address_type='Shipping',default=True)
+                    if address_qs.exists():
+                        shipping_address = address_qs[0]
+                        order.shipping_address = shipping_address
+                        order.save()
+                    else:
+                        messages.info(self.request, "No default shipping address available")
+                        return redirect('checkout')
                 else:
-                    messages.info(self.request, "No default shipping address available")
-                    return redirect('checkout')
-            else:
-                print("User is entering a new billing address")
-                home_address = form.cleaned_data.get('shipping_home')
-                apartment_address = form.cleaned_data.get('shipping_apartment')
-                country = form.cleaned_data.get('shipping_country')
-                region = form.cleaned_data.get('shipping_region')
-                # set_default_shipping = form.cleaned_data.get('set_default_shipping')
-                
-                shipping_address = Address(
-                    user=self.request.user,
-                    home_address = home_address,
-                    apartment_address = apartment_address,
-                    country = country,
-                    region = region,
-                    address_type= 'Shipping',
-                    )
-                shipping_address.save()
+                    print("User is entering a new billing address")
+                    home_address = form.cleaned_data.get('shipping_home')
+                    apartment_address = form.cleaned_data.get('shipping_apartment')
+                    country = form.cleaned_data.get('shipping_country')
+                    region = form.cleaned_data.get('shipping_region')
+                    
+                    if check_form_validity([home_address,apartment_address,country,region]):
+                        shipping_address = Address(
+                            user=self.request.user,
+                            home_address = home_address,
+                            apartment_address = apartment_address,
+                            country = country,
+                            region = region,
+                            address_type= 'Shipping',
+                            )
+                        shipping_address.save()
 
-                set_dafault_shipping = form.cleaned_data.get('set_dafault_shipping')
-                if set_dafault_shipping:
-                    shipping_address.default = True
-                    shipping_address.save()
+                        order.shipping_address = shipping_address
+                        order.save()
 
-                return redirect('checkout')        
-        else:    
-            print(form.errors)
-            messages.warning(self.request, 'Form contains errors.')
+                        set_dafault_shipping = form.cleaned_data.get('set_dafault_shipping')
+                        if set_dafault_shipping:
+                            shipping_address.default = True
+                            shipping_address.save()
+                    else:
+                        messages.warning(self.request, "Please fill in the required shipping address fields to continue")
+                    return redirect('checkout')        
+            else:    
+                print(form.errors)
+                messages.warning(self.request, 'Form contains errors.')
+                return redirect('checkout')
+        except ObjectDoesNotExist:
+            messages.info(self.request, 'Order does not exist')
             return redirect('checkout')
+
