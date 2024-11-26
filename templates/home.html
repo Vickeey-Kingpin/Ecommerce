@@ -1,0 +1,274 @@
+{% load static %}
+{% load cart_template_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Store KE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <section id="header">
+        <a href="{% url 'home' %}"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a class="active" href="#">Home</a></li>
+                <li><a href="{% url 'shop' %}">Shop</a></li>
+                <li><a href="{% url 'blog' %}">Blog</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contacts</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    <li><a href="{% url 'cart' %}">
+                        <span>{{request.user|cart_item_count}}</span>
+                        <i class="fa fa-shopping-bag"></i>
+                    </a></li>
+                {% endif %}
+                <li id="dropdown"><a href=""><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <a href="{% url 'login' %}">Login</a>
+                        <a href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="">Refund</a>
+                            <a href="{% url 'logout' %}">LogOut</a>
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+
+    <section id="messages">
+        {% for message in messages %}
+            <h3>{{message}}</h3>
+            <a href=""><i class="fa fa-times"></i></a>
+        {% endfor %}        
+    </section>
+
+    <section id="hero">
+        {% if user.is_authenticated %}
+            <h4>At the comfort of your house</h4>
+            <h2><span>Hello {{user.first_name}}</span>, Super Deals awaits</h2>
+            <h1>Get your Best Apple Product</h1>
+            <p>Save upto 70% on our products</p>
+            <a href="{% url 'shop' %}"><button>Shop Now</button></a>
+        {% else %}
+            <h4>At the comfort of your house</h4>
+            <h2>Super Deals</h2>
+            <h1>Get your Best Apple Product</h1>
+            <p>Save upto 70% on our products</p>
+            <a href="{% url 'shop' %}"><button>Shop Now</button></a>
+        {% endif %}
+    </section>
+    
+    <section id="product1" class="section-p1">
+        <h2>Featured Products</h2>
+        <p>All IPhones are in the store</p>
+        <div class="pro-container">
+            {% for item in object_list %}
+            <div class="pro">
+                <a href="{{item.get_absolute_url}}">
+                    <img src="{{item.image.url}}">
+                    <div class="des">
+                        <span class="overview">{{item.category}}</span>
+                        <h5>{{item.title}}</h5>
+                        <div class="price">
+                            {% if item.old_price %}
+                            <strike><h4>Ksh {{item.old_price}}</h4></strike>
+                            <h4 class="new">Ksh {{item.new_price}}</h4>
+                            {% else %}
+                            <h4></h4>
+                            <h4 class="new">Ksh {{item.new_price}}</h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="discount">
+                        <h1>{{item.get_percentage_discount}}%</h1>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a href="{{item.add_to_cart}}"><i class="fa fa-shopping-cart cart"></i></a>
+                    {% else %}
+                    <a href="{% url 'login' %}"><i class="fa fa-shopping-cart cart"></i></a>
+                    {% endif %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </section>
+
+    <section id="banner">
+        <h4>Repair Service</h4>
+        <h2>Get upto <span>70% Off</span>All Iphone Accessory</h2>
+        <button class="normal">Explore More &#8594</button>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2>NewProducts</h2>
+        <p>Very new iphone products</p>
+        <div class="pro-container">
+            <div class="pro">
+                <a href="#">
+                    <img src="{% static '/images/iphone15PM.JPG' %}">
+                    <div class="des">
+                        <span class="overview">IPHONE</span>
+                        <h5>Iphone 15 Pro Max</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 20000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+
+            <div class="pro">
+                <a href="#">
+                    <img src="{% static '/images/iphone15PM.JPG' %}">
+                    <div class="des">
+                        <span>IPHONE</span>
+                        <h5>Iphone 15 Pro Max</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 20000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+
+            <div class="pro">
+                <a href="#">
+                    <img src="{% static '/images/iphone15PM.JPG' %}">
+                    <div class="des">
+                        <span>IPHONE</span>
+                        <h5>Iphone 15 Pro Max</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 20000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+
+            <div class="pro">
+                <a href="#">
+                    <img src="{% static '/images/iphone15PM.JPG' %}">
+                    <div class="des">
+                        <span>IPHONE</span>
+                        <h5>Iphone 15 Pro Max</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 20000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+
+            <div class="pro">
+                <a href="#">
+                    <img src="{% static '/images/iphone15PM.JPG' %}">
+                    <div class="des">
+                        <span>IPHONE</span>
+                        <h5>Iphone 15 Pro Max</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 20000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+
+            <div class="pro">
+                <a href="#">
+                    <img src="{% static '/images/iphone15PM.JPG' %}">
+                    <div class="des">
+                        <span>IPHONE</span>
+                        <h5>Iphone 15 Pro Max</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 20000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="newsletter" class="section-p1 section-m1">
+        <div class="newstext">
+            <h4>Sign Up for newsletter</h4>
+            <p>Get Email updates about our latest shop and <span> special offers.</span></p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Enter Your email Address">
+            <button class="normal">Sign Up</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="{% static '/images/Logo1.png' %}">
+            <h4>Contacts</h4>
+            <p><strong>Address: </strong>42, Nairobi-Luthuri Street</p>
+            <p><strong>Phone: </strong>+254 7 16 562 871/+254 7 16 562 872</p>
+            <p><strong>Hours: </strong>10:00-18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fa fa-facebook"></i>
+                    <i class="fa fa-instagram"></i>
+                    <i class="fa fa-twitter"></i>
+                    <i class="fa fa-linkedin"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Private Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+     
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In </a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App store or Google Play</p>
+            <div class="row">
+                <img src="{% static '/images/googleplay.png' %}">
+                <img src="{% static '/images/gooleapp.png' %}">
+            </div>
+            <p>Secure Payment Gateways</p>
+            <img src="{% static '/images/gateway.JPG' %}">
+        </div>
+
+        <div class="copyright">
+            <p>© 2024. Vickeey etc - HTML CSS Ecommerce Template</p>
+        </div>
+    </footer>
+</body>
+</html>

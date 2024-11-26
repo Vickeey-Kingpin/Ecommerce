@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Store KE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <section id="header">
+        <a href="#"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contacts</a></li>
+                <li><a href="#" class="active">Checkout</a></li>
+                <li><a href="#">
+                    <span>3</span>
+                    <i class="fa fa-shopping-bag"></i>
+                </a></li>
+                <li id="dropdown"><a href=""><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="#">Login</a>
+                        <a href="#">Register</a>
+                        <a href="">Refund</a>
+                        <a href="">LogOut</a>
+                    </div>
+                </li>
+
+    </section>
+    
+    <section id="messages">
+        {% for message in messages %}
+            <h3>{{message}}</h3>
+            <a href=""><i class="fa fa-times"></i></a>
+        {% endfor %}        
+    </section>
+
+    <section id="checkout">
+        <div class="container">
+            <form method="POST">
+            {% csrf_token %}
+                <div>
+                    <h3>Shipping Address</h3>
+                    <div class="address">
+                        <div>
+                            <label>Home Address: </label>
+                            <input type="text" placeholder="123 Nairobi-Luthuri" name="shipping_home">
+                        </div>
+                        <div>
+                            <label>Apartment Address: </label>
+                            <input type="text" placeholder="123 Nairobi-Luthuri" name="shipping_apartment">
+                        </div>
+                    </div>
+        
+                    <div class="country-zip">
+                        <label>Country: </label>
+                        {{ form.shipping_country }}
+                        <label>Region: </label>
+                        <input type="text" placeholder="Enter your zip code" name="shipping_region">
+                    </div>
+        
+                     <div class="checkboxes">
+                        <div>
+                            <input type="checkbox" name="set_dafault_shipping">
+                            <label>Set as Default Shipping Address</label>
+                        </div>
+                       <div>
+                            <input type="checkbox" name="shipping_same_billing">
+                            <label>Shipping Address is the same as Shipping Address</label>
+                        </div>
+                        {% if default_shipping_address %}
+                        <div>
+                            <input type="checkbox" name="use_default_shipping">
+                            <label>Use default Shipping Address: {{default_shipping_address.home_address|truncatechars:13}}</label>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <button class="normal" type="submit">Proceed to Payment</button>
+            </form>
+    
+            <!-- <div>
+                <h3>Billing Address</h3>
+                <div class="address">
+                    <div>
+                        <label>Home Address: </label>
+                        <input type="text" placeholder="123 Nairobi-Luthuri">
+                    </div>
+                    <div>
+                        <label>Apartment Address: </label>
+                        <input type="text" placeholder="123 Nairobi-Luthuri">
+                    </div>
+                </div>
+    
+                <div class="country-zip">
+                    <label>Country: </label>
+                    <input type="text" placeholder="Kenya">
+                    <label>Zip: </label>
+                    <input type="text" placeholder="Enter your zip code">
+                </div>
+    
+                <div class="checkboxes">
+                    <div>
+                        <input type="checkbox">
+                        <label>Shipping Address is the same as Billing Address</label>
+                    </div>
+                    <div>
+                        <input type="checkbox">
+                        <label>Set as Default Billing Address</label>
+                    </div>
+                    <div>
+                        <input type="checkbox">
+                        <label>Use default Billing Address</label>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- <div class="payment">
+                <h3>Payment Options</h3>
+                <div>
+                    <input type="radio">
+                    <label for="">Paypal</label>
+                </div>
+                <div>
+                    <input type="radio">
+                    <label for="">Mpesa</label>
+                </div>
+            </div> -->
+
+            <!-- <button class="normal" type="submit">Proceed to Payment</button> -->
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="{% static '/images/Logo1.png' %}">
+            <h4>Contacts</h4>
+            <p><strong>Address: </strong>42, Nairobi-Luthuri Street</p>
+            <p><strong>Phone: </strong>+254 7 16 562 871/+254 7 16 562 872</p>
+            <p><strong>Hours: </strong>10:00-18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fa fa-facebook"></i>
+                    <i class="fa fa-instagram"></i>
+                    <i class="fa fa-twitter"></i>
+                    <i class="fa fa-linkedin"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Private Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+     
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In </a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App store or Google Play</p>
+            <div class="row">
+                <img src="{% static '/images/googleplay.png' %}">
+                <img src="{% static '/images/gooleapp.png' %}">
+            </div>
+            <p>Secure Payment Gateways</p>
+            <img src="{% static '/images/gateway.JPG' %}">
+        </div>
+
+        <div class="copyright">
+            <p>© 2024. Vickeey etc - HTML CSS Ecommerce Template</p>
+        </div>
+    </footer>
+</body>
+</html>

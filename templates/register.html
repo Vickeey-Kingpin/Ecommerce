@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Store KE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <section id="header">
+        <a href="#"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contacts</a></li>
+                <li><a href="#">Checkout</a></li>
+                <li><a href="#">
+                    <span>3</span>
+                    <i class="fa fa-shopping-bag"></i>
+                </a></li>
+                <li id="dropdown"><a href="" class="active"><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="#">Login</a>
+                        <a href="#" class="active">Register</a>
+                        <a href="">Refund</a>
+                        <a href="">LogOut</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+    
+    <section id="messages">
+        {% for message in messages %}
+            <h3>{{message}}</h3>
+            <a href=""><i class="fa fa-times"></i></a>
+        {% endfor %}        
+    </section>
+
+    <section id="wrapper">
+        <div>
+            <img class="r-image" src="{% static 'images/background3.png' %}">
+        </div>
+        <div class="container">
+            <form method="POST">
+                {% csrf_token %}
+                <h3>Register</h3>
+                <div class="input-box">
+                    <input type="text" placeholder="Enter your First Name" name="firstname">
+                </div>
+                <div class="input-box">
+                    <input type="text" placeholder="Enter your Last Name" name="lastname">
+                </div>
+                <div class="input-box">
+                    <input type="email" placeholder="Enter your Email" name="email">
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Set your password" name="password">
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Confirm your password" name="password2">
+                </div>
+                <button type="submit" class="normal">Register</button>
+                <div class="register-link">
+                    <p>Already have an account? <a href="#">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="{% static '/images/Logo1.png' %}">
+            <h4>Contacts</h4>
+            <p><strong>Address: </strong>42, Nairobi-Luthuri Street</p>
+            <p><strong>Phone: </strong>+254 7 16 562 871/+254 7 16 562 872</p>
+            <p><strong>Hours: </strong>10:00-18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fa fa-facebook"></i>
+                    <i class="fa fa-instagram"></i>
+                    <i class="fa fa-twitter"></i>
+                    <i class="fa fa-linkedin"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Private Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+     
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In </a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App store or Google Play</p>
+            <div class="row">
+                <img src="{% static '/images/googleplay.png' %}">
+                <img src="{% static '/images/gooleapp.png' %}">
+            </div>
+            <p>Secure Payment Gateways</p>
+            <img src="{% static '/images/gateway.JPG' %}">
+        </div>
+
+        <div class="copyright">
+            <p>© 2024. Vickeey etc - HTML CSS Ecommerce Template</p>
+        </div>
+</body>
+</html>

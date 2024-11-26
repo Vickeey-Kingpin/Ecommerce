@@ -1,0 +1,172 @@
+{% load static %}
+{% load cart_template_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Store KE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <section id="header">
+        <a href="#"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="#">Home</a></li>
+                <li><a class="active"  href="#">Shop</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contacts</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    <li><a href="{% url 'cart' %}">
+                        <span>{{request.user|cart_item_count}}</span>
+                        <i class="fa fa-shopping-bag"></i>
+                    </a></li>
+                {% endif %}
+                <li id="dropdown"><a href=""><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <a href="{% url 'login' %}">Login</a>
+                        <a href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="">Refund</a>
+                            <a href="{% url 'logout' %}">LogOut</a>
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+    
+    <section id="messages">
+        {% for message in messages %}
+            <h3>{{message}}</h3>
+            <a href=""><i class="fa fa-times"></i></a>
+        {% endfor %}        
+    </section>
+
+    <section id="prodetails" class="section-p1">
+        <div class="pro-image">
+            <img src="{{object.image.url}}">
+        </div>
+        <div class="pro-details">
+            <h6>{{object.category}}</h6>
+            <h4>{{object.title}}</h4>
+            {% if object.old_price %}
+            <h3><strike>Ksh {{object.old_price}}</strike></h3>
+            <h2>Ksh {{object.new_price}}</h2>
+            {% else %}
+            <h2>Ksh {{object.new_price}}</h2>
+            {% endif %}
+            <select>
+                <option>Select Storage</option>
+                <option>128 GB</option>
+                <option>256 GB</option>
+                <option>1 TB</option>
+            </select>
+            {% if user.is_authenticated %}
+            <a href="{% url 'shop' %}"><button class="normal back" >&larr; Continue Shopping </button></a>
+            <a href="{{object.add_to_cart}}"><button class="normal">Add to Cart</button></a>
+            {% else %}
+            <a href="{% url 'login' %}"><button class="normal">Add to Cart</button></a>
+            {% endif %}
+            <h1>Product Details</h1>
+            <div class="span-text">
+                <span>{{object.description}}</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- <section id="product1" class="section-p1">
+        <h2>Related Products</h2>
+        <div class="pro-container">
+            <div class="pro">
+                <a href="#">
+                    <img src="/images/iphone15PM.JPG">
+                    <div class="des">
+                        <span class="overview">IPHONE</span>
+                        <h5>Iphone 16 pm</h5>
+                        <div class="price">
+                            <strike><h4>Ksh 150000</h4></strike>
+                            <h4>Ksh 15000</h4>
+                        </div>
+                    </div>
+                    <a href="#"><i class="fa fa-shopping-cart cart"></i></a>
+                </a>
+            </div>
+        </div>
+
+    </section> -->
+
+    <section id="newsletter" class="section-p1 section-m1">
+        <div class="newstext">
+            <h4>Sign Up for newsletter</h4>
+            <p>Get Email updates about our latest shop and <span> special offers.</span></p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Enter Your email Address">
+            <button class="normal">Sign Up</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="/images/Logo1.png">
+            <h4>Contacts</h4>
+            <p><strong>Address: </strong>42, Nairobi-Luthuri Street</p>
+            <p><strong>Phone: </strong>+254 7 16 562 871/+254 7 16 562 872</p>
+            <p><strong>Hours: </strong>10:00-18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fa fa-facebook"></i>
+                    <i class="fa fa-instagram"></i>
+                    <i class="fa fa-twitter"></i>
+                    <i class="fa fa-linkedin"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Private Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+     
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In </a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App store or Google Play</p>
+            <div class="row">
+                <img src="/images/googleplay.png">
+                <img src="/images/gooleapp.png">
+            </div>
+            <p>Secure Payment Gateways</p>
+            <img src="/images/gateway.JPG">
+        </div>
+
+        <div class="copyright">
+            <p>© 2024. Vickeey etc - HTML CSS Ecommerce Template</p>
+        </div>
+    </footer>
+</body>
+</html>
