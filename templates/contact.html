@@ -19,11 +19,11 @@
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'shop' %}">Shop</a></li>
                 <li><a href="{% url 'blog' %}">Blog</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contacts</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a class="active" href="{% url 'contact' %}">Contacts</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="#">Checkout</a></li>
-                    <li><a href="{% url 'cart' %}" class="active">
+                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    <li><a href="{% url 'cart' %}">
                         <span>{{request.user|cart_item_count}}</span>
                         <i class="fa fa-shopping-bag"></i>
                     </a></li>
@@ -46,99 +46,85 @@
 
     </section>
 
-    <section id="messages">
-        {% for message in messages %}
-            <h3>{{message}}</h3>
-            <a href=""><i class="fa fa-times"></i></a>
-        {% endfor %}        
+    <section id="page-header" class="contact-header">
+        <h2>#Lets talk..</h2>
+        <p>LEAVE A MESSAGE HERE. We Love you</p>
     </section>
 
-    <section id="page-header" class="cart-header">
-        <h2>#Enjoy Free Shipping</h2>
-        <p>Save that shipping</p>
-    </section>
-
-    <section id="cart" class="section-p1">
-        <table width="100%">
-            <thead>
-                <tr>
-                    <td>No.</td>
-                    <td>Image</td>
-                    <td>Name</td>
-                    <td>Price</td>
-                    <td>Quantity</td>
-                    <td>Subtotal</td>
-                    <td>Remove</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cart_item in object.items.all %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td><img src="{{cart_item.item.image.url}}"></td>
-                    <td>{{cart_item.item.title}}</td>
-                    <td>{% if cart_item.item.old_price %}
-                        Ksh {{cart_item.item.new_price}}
-                        <span>Save({{cart_item.item.get_amount_saved}})</span>
-                        {% else %}
-                        Ksh {{cart_item.item.new_price}}
-                        {% endif %}
-                    </td>
-                    <td id="quantity">
-                        <a href="{{cart_item.item.remove_single_from_cart}}"><i class="fa fa-minus"></i></a>
-                            {{cart_item.quantity}}
-                        <a href="{{cart_item.item.add_single_to_cart}}"><i class="fa fa-plus"></i></a>
-                    </td>
-                    <td>Ksh {{cart_item.get_subtotal}}</td>
-                    <td><a href="{{cart_item.item.remove_from_cart}}"><i class="fa fa-trash"></i></a></td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7">Your Cart is empty</td>
-                </tr>
-                <tr>
-                    <td colspan="7">
-                        <a href="{% url 'shop' %}"><button class="normal empty" >Start Shopping </button></a>
-                    </td>
-                </tr>
-             {% endfor %}
-            </tbody>
-        </table>
-    </section>
-
-    <section id="cart-add" class="section-p1">
-        <div id="coupon">
-            <h3>Apply Coupon</h3>
+    <section id="contact-details" class="section-p1">
+        <div class="details">
+            <span>GET IN TOURCH</span>
+            <h2>Visit one of our agencies or contact us today to get some of our</h2>
+            <h3>Head Office</h3>
             <div>
-                <input type="text" placeholder="Enter Your Coupon">
-                <button class="normal">Apply</button>
+                <li>
+                    <i class="fa fa-map-marker"></i>
+                    <p>123 Nairobi, Givanjee-Kenya</p>
+                </li>
+                <li>
+                    <i class="fa fa-envelope-o"></i>
+                    <p>victoranzeze50@gmail.com</p>
+                </li>
+                <li>
+                    <i class="fa fa-phone"></i>
+                    <p>+254 7 123 456 767, +255 7 134 456 78</p>
+                </li>
+                <li>
+                    <i class="fa fa-clock-o"></i>
+                    <p>Monday-Saturday, 9:00-16:00</p>
+                </li>
             </div>
         </div>
 
-        <div id="subtotal">
-            <h3>Cart Subtotal</h3>
-            <table>
-                <tr>
-                    <td>Cart Subtotal</td>
-                    <td>Ksh {{object.get_total}}</td>
-                </tr>
-                <tr>
-                    <td>Shipping</td>
-                    <td>
-                        {% if object.shipping_fee == 0 %}
-                        Free 
-                        {% else %}
-                        Ksh {{object.shipping_fee}}
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td><Strong>Total</Strong></td>
-                    <td><Strong>Ksh {{object.total_plus_shipping}}</Strong></td>
-                </tr>
-            </table>
-            <button class="normal">Proceed to  Checkout</button>
-            <a href="{% url 'shop' %}"><button class="normal empty" style="background:  #FF4500;">Continue Shopping </button></a>
+        <div class="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7979.620229358484!2d34.
+            72699078872067!3d0.11620317838624276!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x17
+            800e2c892894c9%3A0x3c0f61c5b5855d06!2sChavakali!5e0!3m2!1sen!2ske!4v1731317068314!5m2!1sen!2ske" 
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+
+    <section id="form-details">
+        <form action="">
+            <span>LEAVE A MESSAGE</span>
+            <h2>We love to hear from you</h2>
+            <input type="text" placeholder="Your name">
+            <input type="text" placeholder="E-mail">
+            <input type="text" placeholder="Subject">
+            <textarea name="" id="" cols="30" rows="10" placeholder="Your Message"></textarea>
+            <button class="normal">Submit</button>
+        </form>
+
+        <div class="people">
+            <div>
+                <img src="images/person1.jpg!d">
+                <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
+                <br> Email: contact@gmail.com</p>
+            </div>
+
+            <div>
+                <img src="images/person2.jpg">
+                <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
+                <br> Email: contact@gmail.com</p>
+            </div>
+
+            <div>
+                <img src="images/person1.jpg!d">
+                <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
+                <br> Email: contact@gmail.com</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="newsletter" class="section-p1 section-m1">
+        <div class="newstext">
+            <h4>Sign Up for newsletter</h4>
+            <p>Get Email updates about our latest shop and <span> special offers.</span></p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Enter Your email Address">
+            <button class="normal">Sign Up</button>
         </div>
     </section>
 

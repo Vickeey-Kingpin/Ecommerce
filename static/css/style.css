@@ -684,6 +684,7 @@ footer .copyright p{
     color: #fff;
     margin: 0 0 20px 20px;
 }
+
 /* Checkout */
 #checkout{
     display: flex;
@@ -716,33 +717,18 @@ footer .copyright p{
     border: none;
     border-bottom: 2px solid #088178;
 }
-.select-country{
-    width: 200px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    font-size: 14px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 #checkout .address div input:focus{
     outline: none;
 }
-#checkout .country-zip{
-    margin: 15px 0 20px 0;
-}
-#checkout .country-zip label{
-    font-family: Verdana;
-    font-weight: 600;
-    font-size: 14px;
-}
-#checkout .country-zip input{
+#checkout .address div .country{
+    width: 60%;
+    outline: none;
     height: 25px;
+    margin-bottom: 5px;
     border: none;
     border-bottom: 2px solid #088178;
-}
-#checkout .country-zip input:focus{
-    outline: none;
+    background-color: transparent;
+    color: #465b52;
 }
 #checkout .checkboxes{
     color: #465b52;
@@ -898,7 +884,7 @@ footer .copyright p{
 
 /* About */
 #page-header.about-header{
-    background-image: url(images/banner5.png);
+    background-image: url(/static/images/banner5.png);
 }
 #about-head{
     display: flex;
@@ -923,7 +909,7 @@ footer .copyright p{
 
 /* Contact Page */
 #page-header.contact-header{
-    background-image: url(images/contact-banner.JPG);
+    background-image: url(/static/images/contact-banner.JPG);
 }
 #contact-details{
     display: flex;
@@ -1021,7 +1007,7 @@ footer .copyright p{
 
 /* Refund */
 #page-header.refund-header{
-    background-image: url(images/refundbanner.JPG);
+    background-image: url(/static/images/refundbanner.JPG);
 }
 #wrapper.refund .input-box input{
     border: none;

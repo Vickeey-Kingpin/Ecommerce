@@ -1,4 +1,5 @@
 {% load static %}
+{% load cart_template_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,26 +12,33 @@
 <body>
 
     <section id="header">
-        <a href="#"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+        <a href="{% url 'home' %}"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
 
         <div>
             <ul id="navbar">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Blog</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'shop' %}">Shop</a></li>
+                <li><a href="{% url 'blog' %}">Blog</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contacts</a></li>
-                <li><a href="#" class="active">Checkout</a></li>
-                <li><a href="#">
-                    <span>3</span>
-                    <i class="fa fa-shopping-bag"></i>
-                </a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    <li><a href="{% url 'cart' %}">
+                        <span>{{request.user|cart_item_count}}</span>
+                        <i class="fa fa-shopping-bag"></i>
+                    </a></li>
+                {% endif %}
                 <li id="dropdown"><a href=""><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
                     <div class="dropdown-menu">
-                        <a href="#">Login</a>
-                        <a href="#">Register</a>
-                        <a href="">Refund</a>
-                        <a href="">LogOut</a>
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <a href="{% url 'login' %}">Login</a>
+                        <a href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'refund' %}">Refund</a>
+                            <a href="{% url 'logout' %}">LogOut</a>
+                        {% endif %}
                     </div>
                 </li>
 
@@ -47,6 +55,7 @@
         <div class="container">
             <form method="POST">
             {% csrf_token %}
+            <!--Shipping Address-->
                 <div>
                     <h3>Shipping Address</h3>
                     <div class="address">
@@ -58,15 +67,15 @@
                             <label>Apartment Address: </label>
                             <input type="text" placeholder="123 Nairobi-Luthuri" name="shipping_apartment">
                         </div>
-                    </div>
-        
-                    <div class="country-zip">
-                        <label>Country: </label>
-                        {{ form.shipping_country }}
-                        <label>Region: </label>
-                        <input type="text" placeholder="Enter your zip code" name="shipping_region">
-                    </div>
-        
+                        <div>
+                            <label>Country: </label>
+                            <div class="country">{{ form.shipping_country }}</div>                                                            
+                        </div>
+                        <div>
+                            <label>Region: </label>
+                            <input type="text" placeholder="Enter your zip code" name="shipping_region">
+                        </div>
+                    </div>      
                      <div class="checkboxes">
                         <div>
                             <input type="checkbox" name="set_dafault_shipping">
@@ -74,7 +83,7 @@
                         </div>
                        <div>
                             <input type="checkbox" name="shipping_same_billing">
-                            <label>Shipping Address is the same as Shipping Address</label>
+                            <label>Billing Address is the same as Shipping Address</label>
                         </div>
                         {% if default_shipping_address %}
                         <div>
@@ -84,58 +93,56 @@
                         {% endif %}
                     </div>
                 </div>
+            
+            <!--Billing Address-->
+                <div>
+                    <h3>Billing Address</h3>
+                    <div class="address">
+                        <div>
+                            <label>Home Address: </label>
+                            <input type="text" placeholder="123 Nairobi-Luthuri" name="billing_home">
+                        </div>
+                        <div>
+                            <label>Apartment Address: </label>
+                            <input type="text" placeholder="123 Nairobi-Luthuri" name="billing_apartment">
+                        </div>
+                        <div>
+                            <label>Country: </label>
+                            <div class="country">{{ form.billing_country }}</div>                                                            
+                        </div>
+                        <div>
+                            <label>Region: </label>
+                            <input type="text" placeholder="Enter your zip code" name="billing_region">
+                        </div>
+                    </div>      
+                     <div class="checkboxes">
+                        <div>
+                            <input type="checkbox" name="set_dafault_billing">
+                            <label>Set as Default Shipping Address</label>
+                        </div>
+                        {% if default_billing_address %}
+                        <div>
+                            <input type="checkbox" name="use_default_billing">
+                            <label>Use default Billing Address: {{default_billing_address.home_address|truncatechars:13}}</label>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            <!--Payments-->
+                <!-- <div class="payment">
+                    <h3>Payment Options</h3>
+                    <div>
+                        <input type="radio">
+                        <label for="">Paypal</label>
+                    </div>
+                    <div>
+                        <input type="radio">
+                        <label for="">Mpesa</label>
+                    </div>
+                </div> -->
                 <button class="normal" type="submit">Proceed to Payment</button>
             </form>
-    
-            <!-- <div>
-                <h3>Billing Address</h3>
-                <div class="address">
-                    <div>
-                        <label>Home Address: </label>
-                        <input type="text" placeholder="123 Nairobi-Luthuri">
-                    </div>
-                    <div>
-                        <label>Apartment Address: </label>
-                        <input type="text" placeholder="123 Nairobi-Luthuri">
-                    </div>
-                </div>
-    
-                <div class="country-zip">
-                    <label>Country: </label>
-                    <input type="text" placeholder="Kenya">
-                    <label>Zip: </label>
-                    <input type="text" placeholder="Enter your zip code">
-                </div>
-    
-                <div class="checkboxes">
-                    <div>
-                        <input type="checkbox">
-                        <label>Shipping Address is the same as Billing Address</label>
-                    </div>
-                    <div>
-                        <input type="checkbox">
-                        <label>Set as Default Billing Address</label>
-                    </div>
-                    <div>
-                        <input type="checkbox">
-                        <label>Use default Billing Address</label>
-                    </div>
-                </div>
-            </div> -->
-
-            <!-- <div class="payment">
-                <h3>Payment Options</h3>
-                <div>
-                    <input type="radio">
-                    <label for="">Paypal</label>
-                </div>
-                <div>
-                    <input type="radio">
-                    <label for="">Mpesa</label>
-                </div>
-            </div> -->
-
-            <!-- <button class="normal" type="submit">Proceed to Payment</button> -->
         </div>
     </section>
 

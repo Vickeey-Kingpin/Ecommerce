@@ -1,4 +1,5 @@
 {% load static %}
+{% load cart_template_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,26 +12,33 @@
 <body>
 
     <section id="header">
-        <a href="#"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+        <a href="{% url 'home' %}"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
 
         <div>
             <ul id="navbar">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contacts</a></li>
-                <li><a href="#">Checkout</a></li>
-                <li><a href="#">
-                    <span>3</span>
-                    <i class="fa fa-shopping-bag"></i>
-                </a></li>
-                <li id="dropdown"><a href="" class="active"><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'shop' %}">Shop</a></li>
+                <li><a href="{% url 'blog' %}">Blog</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'contact' %}">Contacts</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    <li><a href="{% url 'cart' %}">
+                        <span>{{request.user|cart_item_count}}</span>
+                        <i class="fa fa-shopping-bag"></i>
+                    </a></li>
+                {% endif %}
+                <li id="dropdown"><a class="active" href=""><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
                     <div class="dropdown-menu">
-                        <a href="#">Login</a>
-                        <a href="#" class="active">Register</a>
-                        <a href="">Refund</a>
-                        <a href="">LogOut</a>
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <a href="{% url 'login' %}">Login</a>
+                        <a class="active" href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'refund' %}">Refund</a>
+                            <a href="{% url 'logout' %}">LogOut</a>
+                        {% endif %}
                     </div>
                 </li>
             </ul>
@@ -126,5 +134,6 @@
         <div class="copyright">
             <p>© 2024. Vickeey etc - HTML CSS Ecommerce Template</p>
         </div>
+    </footer>
 </body>
 </html>

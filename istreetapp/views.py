@@ -77,6 +77,12 @@ class BlogView(ListView):
     model = Blog
     template_name = 'blog.html'
 
+def contactview(request):
+    return render(request,'contact.html')
+
+def aboutview(request):
+    return render(request,'about.html')
+
 class BlogDetailView(DetailView):
     model = Blog
     template_name = 'detailed-blog.html'
@@ -161,8 +167,12 @@ class CheckOutView(View):
             }  
             shipping_address_qs = Address.objects.filter(user=self.request.user,default=True,address_type='Shipping') 
             if shipping_address_qs.exists():
-                context.update({'default_shipping_address':shipping_address_qs[0]})         
+                context.update({'default_shipping_address':shipping_address_qs[0]})   
+            billing_address_qs = Address.objects.filter(user=self.request.user,default=True,address_type='Billing')
+            if billing_address_qs.exists():
+                context.update({'default_billing_address':billing_address_qs[0]})   
             return render(self.request, 'checkout.html',context)
+            
         except ObjectDoesNotExist:
             messages.warning(self.request, 'Order does not exist')
             return redirect('checkout')
@@ -173,6 +183,7 @@ class CheckOutView(View):
             order = Order.objects.get(user=self.request.user,ordered=False)
 
             if form.is_valid():
+                # Shipping Address
                 use_default_shipping = form.cleaned_data.get('use_default_shipping')
                 if use_default_shipping:
                     print('Using the default shippng address')
@@ -211,7 +222,61 @@ class CheckOutView(View):
                             shipping_address.save()
                     else:
                         messages.warning(self.request, "Please fill in the required shipping address fields to continue")
-                    return redirect('checkout')        
+                        return redirect('checkout') 
+                    return redirect('checkout') 
+
+                # Billing Address
+                use_default_billing = form.cleaned_data.get('use_default_billing')
+                shipping_same_billing = form.cleaned_data.get('shipping_same_billing')
+                
+                if shipping_same_billing:
+                    billing_address = shipping_address
+                    billing_address.pk = None
+                    billing_address.save()
+                    billing_address.address_type = 'Billing'
+                    billing_address.save()
+                    order.billing_address = billing_address
+                    order.save()
+                elif use_default_billing:
+                    print('Using the default billing address')
+                    address_qs = Address.objects.filter(user=self.request.user,address_type='Billing',default=True)
+                    if address_qs.exists():
+                        billing_address = address_qs[0]
+                        order.billing_address = billing_address
+                        order.save()
+                    else:
+                        messages.info(self.request, "No default billing address available")
+                        return redirect('checkout')
+                else:
+                    print("User is entering a new billing address")
+                    billing_home_address = form.cleaned_data.get('billing_home')
+                    billing_apartment_address = form.cleaned_data.get('billing_apartment')
+                    billing_country = form.cleaned_data.get('billing_country')
+                    billing_region = form.cleaned_data.get('billing_region')
+                    
+                    if check_form_validity([billing_home_address,billing_apartment_address,billing_country,billing_region]):
+                        billing_address = Address(
+                            user=self.request.user,
+                            home_address = billing_home_address,
+                            apartment_address = billing_apartment_address,
+                            country = billing_country,
+                            region = billing_region,
+                            address_type= 'Billing',
+                            )
+                        billing_address.save()
+
+                        order.billing_address = billing_address
+                        order.save()
+
+                        set_dafault_billing = form.cleaned_data.get('set_dafault_billing')
+                        if set_dafault_billing:
+                            billing_address.default = True
+                            billing_address.save()
+                    else:
+                        messages.warning(self.request, "Please fill in the required billing address fields to continue")
+                    return redirect('checkout') 
+                return redirect('checkout') 
+
             else:    
                 print(form.errors)
                 messages.warning(self.request, 'Form contains errors.')
@@ -220,3 +285,6 @@ class CheckOutView(View):
             messages.info(self.request, 'Order does not exist')
             return redirect('checkout')
 
+class RefundView(ListView):
+    model = Blog
+    template_name = 'refund.html'

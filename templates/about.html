@@ -18,8 +18,8 @@
             <ul id="navbar">
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'shop' %}">Shop</a></li>
-                <li><a class="active"  href="{% url 'blog' %}">Blog</a></li>
-                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'blog' %}">Blog</a></li>
+                <li><a class="active" href="{% url 'about' %}">About</a></li>
                 <li><a href="{% url 'contact' %}">Contacts</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'checkout' %}">Checkout</a></li>
@@ -46,42 +46,28 @@
 
     </section>
 
-    <section id="page-header" class="blog-header">
-        <h2>#Read More..</h2>
-        <p>About our products</p>
+    <section id="page-header" class="about-header">
+        <h2>#Know Us..</h2>
+        <p>Get more information about us</p>
     </section>
 
-    <section id="blog">
-        {% for item in object_list %}
-        <div class="blog-box">
-            <div class="blog-img">
-                <img src="{{item.image.url}}">
-            </div>
-            <div class="blog-details">
-                <h4>{{item.title}}</h4>
-                <p>{{item.body|truncatewords:20}}</p>
-                <a href="{{item.get_absolute_url}}">Read More... &rarr;</a>
-            </div>
-            <h1>{{item.date_created|date:"d/m/y"}}</h1>
-        </div>
-        {% endfor %}
-    </section>
+    <section id="about-head" class="section-p1">
+        <img src="{% static 'images/about.jpg' %}">
+        <div>
+            <h2>'Wanna know more about us?</h2>
+            <p>The About Us page of your website is an essential source of 
+            information for anyone who wants to know more about your business.
+            It is where you showcase your history, the unique value of your 
+            work, your mission and vision, and the audiences you serve.               
+            Together, the design, written content, and visual elements at matters to you.
+            </p>
+            <abbr title="">In this article, discover what makes an exceptional About 
+            Us page and find 25 examples to inspire your own page design and content.</abbr>
 
-    <section id="pagination" class="section-p1">
-        <a href="#">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">&#8594</a>
-    </section>
+            <br><br>
 
-    <section id="newsletter" class="section-p1 section-m1">
-        <div class="newstext">
-            <h4>Sign Up for newsletter</h4>
-            <p>Get Email updates about our latest shop and <span> special offers.</span></p>
-        </div>
-        <div class="form">
-            <input type="text" placeholder="Enter Your email Address">
-            <button class="normal">Sign Up</button>
+            <marquee width="100%" loop="-1" scrollamount="5" bgcolor="#ccc">In this article, discover 
+            what makes an exceptional About Us page and find 25 examples to inspire your own page design and content.</marquee>
         </div>
     </section>
 
