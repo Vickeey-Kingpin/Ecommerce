@@ -130,17 +130,15 @@
                 </div>
 
             <!--Payments-->
-                <!-- <div class="payment">
+                <div class="payment">
                     <h3>Payment Options</h3>
+                    {% for value,name in form.fields.payment_option.choices %}
                     <div>
-                        <input type="radio">
-                        <label for="">Paypal</label>
+                        <input type="radio" value="{{value}}" name="payment_option">
+                        <label for="">{{name}}</label>
                     </div>
-                    <div>
-                        <input type="radio">
-                        <label for="">Mpesa</label>
-                    </div>
-                </div> -->
+                    {% endfor %}
+                </div>
                 <button class="normal" type="submit">Proceed to Payment</button>
             </form>
         </div>

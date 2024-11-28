@@ -3,10 +3,15 @@ from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
 
+PAYMENT_OPTIONS = (
+    ('P','Paypal'),
+    ('M','Mpesa')
+)
+
 class CheckoutForm(forms.Form):
     shipping_home = forms.CharField(required=False)
     shipping_apartment = forms.CharField(required=False)
-    shipping_country = CountryField(blank_label='Select Country').formfield(required=False,
+    shipping_country = CountryField(blank_label='Shipping Country').formfield(required=False,
             widget=CountrySelectWidget(attrs={
             'class': 'country'}))
     shipping_region = forms.CharField(required=False)
@@ -16,12 +21,14 @@ class CheckoutForm(forms.Form):
 
     billing_home = forms.CharField(required=False)
     billing_apartment = forms.CharField(required=False)
-    billing_country = CountryField().formfield(required=False,
+    billing_country = CountryField(blank_label='Billing Country').formfield(required=False,
             widget=CountrySelectWidget(attrs={
             'class':'country'}))
     billing_region = forms.CharField(required=False)
     use_default_billing = forms.BooleanField(required=False)
     set_dafault_billing = forms.BooleanField(required=False)
 
-# same_billing_as_shipping
-# set_as_default_shipping
+    payment_option = forms.ChoiceField(widget=forms.RadioSelect,choices=PAYMENT_OPTIONS)
+
+class MpesaForm(forms.Form):
+    phone_number = forms.CharField(required=True)

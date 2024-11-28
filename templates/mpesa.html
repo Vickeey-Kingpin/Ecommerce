@@ -16,14 +16,14 @@
 
         <div>
             <ul id="navbar">
-                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Home</a></li>
                 <li><a href="{% url 'shop' %}">Shop</a></li>
                 <li><a href="{% url 'blog' %}">Blog</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contacts</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'contact' %}">Contacts</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="#">Checkout</a></li>
-                    <li><a href="{% url 'cart' %}" class="active">
+                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    <li><a href="{% url 'cart' %}">
                         <span>{{request.user|cart_item_count}}</span>
                         <i class="fa fa-shopping-bag"></i>
                     </a></li>
@@ -53,77 +53,31 @@
         {% endfor %}        
     </section>
 
-    <section id="page-header" class="cart-header">
-        <h2>#Enjoy Free Shipping</h2>
-        <p>Save that shipping</p>
-    </section>
-
-    <section id="cart" class="section-p1">
-        <table width="100%">
-            <thead>
-                <tr>
-                    <td>No.</td>
-                    <td>Image</td>
-                    <td>Name</td>
-                    <td>Price</td>
-                    <td>Quantity</td>
-                    <td>Subtotal</td>
-                    <td>Remove</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cart_item in object.items.all %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td><img src="{{cart_item.item.image.url}}"></td>
-                    <td>{{cart_item.item.title}}</td>
-                    <td>{% if cart_item.item.old_price %}
-                        Ksh {{cart_item.item.new_price}}
-                        <span>Save({{cart_item.item.get_amount_saved}})</span>
-                        {% else %}
-                        Ksh {{cart_item.item.new_price}}
-                        {% endif %}
-                    </td>
-                    <td id="quantity">
-                        <a href="{{cart_item.item.remove_single_from_cart}}"><i class="fa fa-minus"></i></a>
-                            {{cart_item.quantity}}
-                        <a href="{{cart_item.item.add_single_to_cart}}"><i class="fa fa-plus"></i></a>
-                    </td>
-                    <td>Ksh {{cart_item.get_subtotal}}</td>
-                    <td><a href="{{cart_item.item.remove_from_cart}}"><i class="fa fa-trash"></i></a></td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7">Your Cart is empty</td>
-                </tr>
-                <tr>
-                    <td colspan="7">
-                        <a href="{% url 'shop' %}"><button class="normal empty" >Start Shopping </button></a>
-                    </td>
-                </tr>
-             {% endfor %}
-            </tbody>
-        </table>
-    </section>
-
-    <section id="cart-add" class="section-p1">
-        <div id="coupon">
-            <h3>Apply Coupon</h3>
-            <div>
-                <input type="text" placeholder="Enter Your Coupon">
-                <button class="normal">Apply</button>
-            </div>
+    <section id="wrapper" class="mpesa">
+        <div class="container">
+            <form method="POST">
+                {% csrf_token %}
+                <img src="{% static '/images/mpesa.png' %}">
+                <div class="input-box">
+                    <input type="text" placeholder="Enter your Phone number" name="phone_number">
+                </div>
+                <button class="normal mpesa-button">Confirm payment</button>
+            </form>
         </div>
 
-        <div id="subtotal">
-            <h3>Cart Subtotal</h3>
+        <div class="top">
+            <h3>Order Summary</h3>
+            <h3>[{{request.user|cart_item_count}} item(s)]</h3>
+        </div>
+
+        <div class="container summary">
             <table>
                 <tr>
-                    <td>Cart Subtotal</td>
-                    <td>Ksh {{object.get_total}}</td>
+                    <td><strong>Subtotal</strong></td>
+                    <td>{{object.get_total}}</td>
                 </tr>
                 <tr>
-                    <td>Shipping</td>
+                    <td><strong>Shipping</strong></td>
                     <td>
                         {% if object.shipping_fee == 0 %}
                         Free 
@@ -133,12 +87,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><Strong>Total</Strong></td>
+                    <td><strong>Total</strong></td>
                     <td><Strong>Ksh {{object.total_plus_shipping}}</Strong></td>
                 </tr>
             </table>
-            <a href="{% url 'checkout' %}"><button class="normal">Proceed to  Checkout</button></a>
-            <a href="{% url 'shop' %}"><button class="normal empty" style="background:  #FF4500;">Continue Shopping </button></a>
         </div>
     </section>
 

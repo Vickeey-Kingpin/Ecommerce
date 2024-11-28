@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.views.generic import ListView, DetailView,View
-from . models  import Item,CartItem,Order, Blog,Address
+from . models  import Item,CartItem,Order, Blog,Address,Payment
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import CheckoutForm
+from .forms import CheckoutForm,MpesaForm
+from django_daraja.mpesa.core import MpesaClient
+from django.http import HttpResponse
 
 # Create your views here.
 def check_form_validity(values):
@@ -14,6 +16,72 @@ def check_form_validity(values):
         if field == '':
             valid=False
     return valid
+
+# def mpesa(index):
+#     cl = MpesaClient()
+#     # Use a Safaricom phone number that you have access to, for you to be able to view the prompt.
+#     phone_number = '0716562871'
+#     amount = 1
+#     account_reference = 'reference'
+#     transaction_desc = 'Description'
+#     callback_url = 'https://mydomain.com/path'
+#     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
+#     return HttpResponse(response)
+
+class MpesaPaymentView(View):
+    def get(self,*args,**kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user,ordered=False)
+            context = {
+                'object':order
+            }
+            return render(self.request, 'mpesa.html',context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'You don\'t have an active order')
+            return redirect('/')
+    
+    def post(self,*args,**kwargs):
+        form = MpesaForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user,ordered=False)
+
+            if form.is_valid():
+                phone_number = form.cleaned_data.get('phone_number')
+
+                if len(phone_number) == 10:
+                    cl = MpesaClient()
+                    phone_number = phone_number
+                    amount = int(order.total_plus_shipping())
+                    account_reference = 'reference'
+                    transaction_desc = 'Description'
+                    callback_url = 'https://mydomain.com/path'
+                    cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
+                else:
+                    messages.error(self.request, 'Phone number must have 10 digits')
+                    return redirect('mpesa')
+                
+                payment = Payment(
+                    user = self.request.user,
+                    payment_option = 'Mpesa',
+                    amount_paid = amount,
+                )
+                payment.save()
+
+                order.ordered = True
+                order.save()
+
+                messages.info(self.request, 'Push request send to your phone, enter PIN to complete')
+                return redirect('mpesa') 
+            else:    
+                print(form.errors)
+                messages.warning(self.request, 'Form contains errors.')
+                return redirect('mpesa') 
+        except ObjectDoesNotExist:
+            messages.info(self.request, 'Order does not exist')
+            return redirect('mpesa')  
+
+def paypal(request):
+    return render(request, 'paypal.html')
 
 def register(request):
     if request.method == 'POST':
@@ -157,7 +225,7 @@ def remove_item_from_cart(request,pk):
     messages.success(request,'This item successifully removed from your cart')
     return redirect('cart')
 
-class CheckOutView(View):
+class CheckOutView(ListView):
     def get(self,*args,**kwargs):
         form = CheckoutForm()
         try:
@@ -196,7 +264,7 @@ class CheckOutView(View):
                         messages.info(self.request, "No default shipping address available")
                         return redirect('checkout')
                 else:
-                    print("User is entering a new billing address")
+                    print("User is entering a new shipping address")
                     home_address = form.cleaned_data.get('shipping_home')
                     apartment_address = form.cleaned_data.get('shipping_apartment')
                     country = form.cleaned_data.get('shipping_country')
@@ -223,7 +291,6 @@ class CheckOutView(View):
                     else:
                         messages.warning(self.request, "Please fill in the required shipping address fields to continue")
                         return redirect('checkout') 
-                    return redirect('checkout') 
 
                 # Billing Address
                 use_default_billing = form.cleaned_data.get('use_default_billing')
@@ -237,7 +304,7 @@ class CheckOutView(View):
                     billing_address.save()
                     order.billing_address = billing_address
                     order.save()
-                elif use_default_billing:
+                if use_default_billing:
                     print('Using the default billing address')
                     address_qs = Address.objects.filter(user=self.request.user,address_type='Billing',default=True)
                     if address_qs.exists():
@@ -274,7 +341,14 @@ class CheckOutView(View):
                             billing_address.save()
                     else:
                         messages.warning(self.request, "Please fill in the required billing address fields to continue")
-                    return redirect('checkout') 
+                        return redirect('checkout') 
+                payment_option = form.cleaned_data.get('payment_option')  
+                if payment_option == 'M':
+                    return redirect('mpesa')     
+                elif payment_option == 'P':
+                    return redirect('paypal') 
+                else:
+                    messages.warning(self.request, 'INvalid payment options')
                 return redirect('checkout') 
 
             else:    

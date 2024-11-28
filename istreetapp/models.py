@@ -16,6 +16,11 @@ ADDRESS_TYPE = (
     ('Shipping','S')
 )
 
+PAYMENT_OPTIONS = (
+    ('Paypal','P'),
+    ('Mpesa','M'),
+)
+
 
 class Item(models.Model):
     title = models.CharField(max_length=250)
@@ -118,3 +123,9 @@ class Address(models.Model):
     
     class Meta:
         verbose_name_plural = 'Addresses'
+
+class Payment(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    payment_option = models.CharField(max_length=10, choices=PAYMENT_OPTIONS)
+    amount_paid = models.FloatField(default=0)
+    is_paid = models.BooleanField(default=False)
