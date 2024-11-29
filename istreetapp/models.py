@@ -59,6 +59,9 @@ class Item(models.Model):
             return round(amount_saved)
         else:
             return self.new_price
+        
+    def __str__(self):
+        return self.title
     
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -78,6 +81,10 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     shipping_address = models.ForeignKey('Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey('Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
+    payment= models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
+    refund_code = models.CharField(max_length=20,blank=True,null=True)
+    refund_requested = models.BooleanField(default=False)
+    refund_granted = models.BooleanField(default=False)
 
     def get_total(self):
         total = 0
@@ -129,3 +136,19 @@ class Payment(models.Model):
     payment_option = models.CharField(max_length=10, choices=PAYMENT_OPTIONS)
     amount_paid = models.FloatField(default=0)
     is_paid = models.BooleanField(default=False)
+    payment_number = models.CharField(max_length=10)
+
+    def __str__(self) -> str:
+        return self.user.email
+
+class Testimonial(models.Model):
+    email = models.EmailField()
+    name = models.CharField(max_length=50)
+    subject = models.CharField(max_length=100)
+    message = models.TextField(null=True,blank=True)
+
+class Refund(models.Model):
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    reasons = models.TextField(null=True,blank=True)
+    accepted = models.BooleanField(default=False)
+    email = models.EmailField()

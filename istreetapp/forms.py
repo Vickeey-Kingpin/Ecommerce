@@ -32,3 +32,14 @@ class CheckoutForm(forms.Form):
 
 class MpesaForm(forms.Form):
     phone_number = forms.CharField(required=True)
+
+class TestimonialForm(forms.Form):
+    name = forms.CharField(required=False)
+    email = forms.CharField(required=False)
+    subject = forms.CharField(required=False)
+    message = forms.Textarea()
+
+class RefundForm(forms.Form):
+    refund_code = forms.CharField()
+    refund_email = forms.EmailField()
+    refund_reason = forms.CharField()

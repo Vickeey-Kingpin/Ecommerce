@@ -789,7 +789,7 @@ footer .copyright p{
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid #222;
+    border: 2px solid #ccc;
     border-radius: 40px;
     padding-left: 10px;
 }
@@ -798,6 +798,7 @@ footer .copyright p{
     right: 20px;
     top: 20px;
     font-size: 20px;
+    color: #ccc;
 }
 #wrapper .container button{
     width: 100%;
@@ -1009,12 +1010,29 @@ footer .copyright p{
 #page-header.refund-header{
     background-image: url(/static/images/refundbanner.JPG);
 }
+#wrapper.refund{
+    height: 50vh;
+    box-shadow: none;
+}
 #wrapper.refund .input-box input{
     border: none;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid #ccc;
+}
+#wrapper.refund .input-box textarea{
+    width: 100%;
+    height: 100px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
+    outline: none;
 }
 #wrapper.refund .container button{
     margin-bottom: 20px;
+    margin-top: 50px;
 }
 
 /* mpesa */
@@ -1057,15 +1075,15 @@ footer .copyright p{
 }
 #wrapper.mpesa input{
     border-radius: 4px;
-    width: 43%;
+    width: 98%;
     border: 2px solid #ccc;
     transition: width 0.4s ease-in-out;
     font-size: 18px;
     font-family: Arial;
 }
-#wrapper.mpesa input:focus{
+/* #wrapper.mpesa input:focus{
     width: 98%;
-}
+} */
 #wrapper.mpesa .summary table{
     width: 100%;
     border-collapse: collapse;

@@ -2,31 +2,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.views.generic import ListView, DetailView,View
-from . models  import Item,CartItem,Order, Blog,Address,Payment
+from . models  import Item,CartItem,Order, Blog,Address,Payment,Testimonial,Refund
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import CheckoutForm,MpesaForm
+from .forms import CheckoutForm,MpesaForm,TestimonialForm,RefundForm
 from django_daraja.mpesa.core import MpesaClient
 from django.http import HttpResponse
+import django_daraja
+import random,string
 
 # Create your views here.
+def generate_refund_code():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
 def check_form_validity(values):
     valid = True
     for field in values:
         if field == '':
             valid=False
     return valid
-
-# def mpesa(index):
-#     cl = MpesaClient()
-#     # Use a Safaricom phone number that you have access to, for you to be able to view the prompt.
-#     phone_number = '0716562871'
-#     amount = 1
-#     account_reference = 'reference'
-#     transaction_desc = 'Description'
-#     callback_url = 'https://mydomain.com/path'
-#     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
-#     return HttpResponse(response)
 
 class MpesaPaymentView(View):
     def get(self,*args,**kwargs):
@@ -64,17 +58,20 @@ class MpesaPaymentView(View):
                     user = self.request.user,
                     payment_option = 'Mpesa',
                     amount_paid = amount,
+                    payment_number = phone_number,
                 )
                 payment.save()
 
-                order.ordered = True
+                # order.ordered = True
+                order.payment = payment
+                order.refund_code = generate_refund_code()
                 order.save()
 
                 messages.info(self.request, 'Push request send to your phone, enter PIN to complete')
                 return redirect('mpesa') 
             else:    
                 print(form.errors)
-                messages.warning(self.request, 'Form contains errors.')
+                messages.warning(self.request, 'Field cannot be empty.')
                 return redirect('mpesa') 
         except ObjectDoesNotExist:
             messages.info(self.request, 'Order does not exist')
@@ -144,9 +141,6 @@ class ShopView(ListView):
 class BlogView(ListView):
     model = Blog
     template_name = 'blog.html'
-
-def contactview(request):
-    return render(request,'contact.html')
 
 def aboutview(request):
     return render(request,'about.html')
@@ -353,12 +347,77 @@ class CheckOutView(ListView):
 
             else:    
                 print(form.errors)
-                messages.warning(self.request, 'Form contains errors.')
+                messages.warning(self.request, 'Please select payment options.')
                 return redirect('checkout')
         except ObjectDoesNotExist:
             messages.info(self.request, 'Order does not exist')
             return redirect('checkout')
 
-class RefundView(ListView):
-    model = Blog
-    template_name = 'refund.html'
+class TestimonialView(View):
+    def get(self,*args,**kwargs):
+        form = TestimonialForm()
+        return render(self.request,'contact.html')
+    
+    def post(self,*args,**kwargs):
+        form = TestimonialForm(self.request.POST or None)
+
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            email = form.cleaned_data.get('email')
+            subject = form.cleaned_data.get('subject')
+            message = form.cleaned_data.get('message')
+
+            if check_form_validity([name,email,subject,message]):
+                testimonial = Testimonial(
+                email = email,
+                name = name,
+                subject = subject,
+                message = message,
+                )
+                testimonial.save()
+
+                messages.success(self.request, f'Thanks {name} for your message')
+                return redirect('contact') 
+            else:
+                messages.warning(self.request, "Please fill all the fields to continue")
+                return redirect('contact')
+        else:    
+            print(form.errors)
+            messages.warning(self.request, 'Form errors')
+            return redirect('contact') 
+        
+class RefundView(View):
+    def get(self,*args,**kwargs):
+        form = RefundForm()
+        return render(self.request, 'refund.html' )
+    
+    def post(self,*args,**kwargs):
+        form = RefundForm(self.request.POST or None)
+
+        if form.is_valid():
+
+            refund_code = form.cleaned_data.get('refund_code')
+            refund_email = form.cleaned_data.get('refund_email')
+            refund_reason = form.cleaned_data.get('refund_reason')
+
+            try:
+                order = Order.objects.get(refund_code=refund_code)
+                order.refund_requested = True
+                order.save()
+
+                refund = Refund()
+                refund.order = order
+                refund.reasons =refund_reason
+                refund.email = refund_email
+
+                refund.save()
+
+                messages.info(self.request, 'Your refund request received')
+                return redirect('refund')
+            except ObjectDoesNotExist:
+                messages.info(self.request, "This order does not exist.")
+                return redirect("refund")
+        else:    
+            print(form.errors)
+            messages.warning(self.request, 'Form errors')
+            return redirect('refund') 

@@ -45,6 +45,13 @@
         </div>
 
     </section>
+  
+    <section id="messages">
+        {% for message in messages %}
+            <h3>{{message}}</h3>
+            <a href=""><i class="fa fa-times"></i></a>
+        {% endfor %}        
+    </section>
 
     <section id="page-header" class="refund-header">
         <h2>#Return?</h2>
@@ -53,14 +60,20 @@
 
     <section id="wrapper" class="refund">
         <div class="container">
-            <h3>Refund</h3>
-            <div class="input-box">
-                <input type="text" placeholder="Enter your Reference Code">
-            </div>
-            <div class="input-box">
-                <input type="email" placeholder="Enter your Email">
-            </div>
-            <button class="normal">Submit</button>
+            <form method="POST">
+                {% csrf_token %}
+                <h3>Refund</h3>
+                <div class="input-box">
+                    <input type="text" name="refund_code" placeholder="Enter your Reference Code">
+                </div>
+                <div class="input-box">
+                    <input type="email" name="refund_email" placeholder="Enter your Email">
+                </div>
+                <div class="input-box">
+                    <textarea rows="4" cols="50" name="refund_reason" placeholder="Enter reason here"></textarea>
+                </div>
+                <button type="submit" class="normal">Submit</button>
+            </form>
         </div>
     </section>
 

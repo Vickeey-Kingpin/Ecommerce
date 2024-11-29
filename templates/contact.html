@@ -46,6 +46,13 @@
 
     </section>
 
+    <section id="messages">
+        {% for message in messages %}
+            <h3>{{message}}</h3>
+            <a href=""><i class="fa fa-times"></i></a>
+        {% endfor %}        
+    </section>
+
     <section id="page-header" class="contact-header">
         <h2>#Lets talk..</h2>
         <p>LEAVE A MESSAGE HERE. We Love you</p>
@@ -86,31 +93,32 @@
     </section>
 
     <section id="form-details">
-        <form action="">
+        <form method="POST">
+            {% csrf_token %}
             <span>LEAVE A MESSAGE</span>
             <h2>We love to hear from you</h2>
-            <input type="text" placeholder="Your name">
-            <input type="text" placeholder="E-mail">
-            <input type="text" placeholder="Subject">
-            <textarea name="" id="" cols="30" rows="10" placeholder="Your Message"></textarea>
+            <input type="text" placeholder="Your name" name="name">
+            <input type="text" placeholder="E-mail" name="email">
+            <input type="text" placeholder="Subject" name="subject">
+            <textarea name="message" id="" cols="30" rows="10" placeholder="Your Message"></textarea>
             <button class="normal">Submit</button>
         </form>
 
         <div class="people">
             <div>
-                <img src="images/person1.jpg!d">
+                <img src="{% static 'images/person1.jpg!d' %}">
                 <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
                 <br> Email: contact@gmail.com</p>
             </div>
 
             <div>
-                <img src="images/person2.jpg">
+                <img src="{% static 'images/person2.jpg' %}">
                 <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
                 <br> Email: contact@gmail.com</p>
             </div>
 
             <div>
-                <img src="images/person1.jpg!d">
+                <img src="{% static 'images/person1.jpg!d' %}">
                 <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
                 <br> Email: contact@gmail.com</p>
             </div>
