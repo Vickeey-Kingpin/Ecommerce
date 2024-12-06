@@ -21,6 +21,18 @@ PAYMENT_OPTIONS = (
     ('Mpesa','M'),
 )
 
+class Staff(models.Model):
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=15)
+    position = models.CharField(max_length=30)
+    photo = models.ImageField(blank=True,null=True,upload_to='images/')
+    is_staff = models.BooleanField(default=True)
+
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
 class Item(models.Model):
     title = models.CharField(max_length=250)

@@ -2,14 +2,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.views.generic import ListView, DetailView,View
-from . models  import Item,CartItem,Order, Blog,Address,Payment,Testimonial,Refund
+from . models  import Item,CartItem,Order, Blog,Address,Payment,Testimonial,Refund,Staff
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import CheckoutForm,MpesaForm,TestimonialForm,RefundForm
 from django_daraja.mpesa.core import MpesaClient
 from django.http import HttpResponse
-import django_daraja
+import django_daraja,uuid
 import random,string
+from paypal.standard.forms import PayPalPaymentsForm
+from django.urls import reverse
+from django.conf import settings
+
 
 # Create your views here.
 def generate_refund_code():
@@ -77,8 +81,32 @@ class MpesaPaymentView(View):
             messages.info(self.request, 'Order does not exist')
             return redirect('mpesa')  
 
-def paypal(request):
-    return render(request, 'paypal.html')
+class PaypalPaymentView(View):
+    def get(self,*args,**kwargs):
+        # host = self.request.get_host()
+        order = Order.objects.get(user=self.request.user,ordered=False)
+
+        paypal_dict ={
+            'business' : settings.PAYPAL_RECEIVER_EMAIL,
+            'amount' : order.total_plus_shipping()/139,
+            "item_name": "Istreet Items",
+            "invoice": uuid.uuid4(),
+            "notify_url": self.request.build_absolute_uri(reverse('paypal-ipn')),
+            "return": self.request.build_absolute_uri(reverse('home')),
+            "cancel_return": self.request.build_absolute_uri(reverse('home')),
+        }
+        form =PayPalPaymentsForm(initial=paypal_dict)
+        context = {
+            "form": form,
+        }
+        payment = Payment(
+            user = self.request.user,
+            payment_option = 'Paypal',
+            amount_paid = order.total_plus_shipping(),
+            payment_number = paypal_dict['invoice'],
+        )
+        payment.save()
+        return render(self.request, "paypal.html", context)
 
 def register(request):
     if request.method == 'POST':
@@ -356,7 +384,11 @@ class CheckOutView(ListView):
 class TestimonialView(View):
     def get(self,*args,**kwargs):
         form = TestimonialForm()
-        return render(self.request,'contact.html')
+        staff = Staff.objects.all()[:2]
+        context = {
+            'staffs':staff
+        }
+        return render(self.request,'contact.html',context)
     
     def post(self,*args,**kwargs):
         form = TestimonialForm(self.request.POST or None)
@@ -385,7 +417,7 @@ class TestimonialView(View):
             print(form.errors)
             messages.warning(self.request, 'Form errors')
             return redirect('contact') 
-        
+
 class RefundView(View):
     def get(self,*args,**kwargs):
         form = RefundForm()
@@ -415,7 +447,7 @@ class RefundView(View):
                 messages.info(self.request, 'Your refund request received')
                 return redirect('refund')
             except ObjectDoesNotExist:
-                messages.info(self.request, "This order does not exist.")
+                messages.info(self.request, "The reference code is invalid.")
                 return redirect("refund")
         else:    
             print(form.errors)

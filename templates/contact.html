@@ -105,24 +105,13 @@
         </form>
 
         <div class="people">
+            {% for staff in staffs %}
             <div>
-                <img src="{% static 'images/person1.jpg!d' %}">
-                <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
-                <br> Email: contact@gmail.com</p>
+                <img src="{{staff.photo.url}}">
+                <p><span>{{staff.get_full_name}}</span>{{staff.position}} <br> Phone: + 254 {{staff.phone_number}}
+                <br> Email: {{staff.email}}</p>
             </div>
-
-            <div>
-                <img src="{% static 'images/person2.jpg' %}">
-                <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
-                <br> Email: contact@gmail.com</p>
-            </div>
-
-            <div>
-                <img src="{% static 'images/person1.jpg!d' %}">
-                <p><span>John Djoe</span>Senior Maketing Director <br> Phone: + 254 123 456 711
-                <br> Email: contact@gmail.com</p>
-            </div>
-        </div>
+            {% endfor %}
     </section>
 
     <section id="newsletter" class="section-p1 section-m1">

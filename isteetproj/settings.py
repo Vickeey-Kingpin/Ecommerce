@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'istreetapp',
     'django_countries',
     'django_daraja',
+
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -173,3 +175,7 @@ MPESA_INITIATOR_USERNAME = 'initiator_username'
 # Plaintext password for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
 
 MPESA_INITIATOR_SECURITY_CREDENTIAL = 'initiator_security_credential'
+
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = 'vfiveight@gmail.com'
+PAYPAL_BUY_BUTTON_IMAGE = "https://lavendercottagecattery.co.uk/wp-content/uploads/2022/10/CITYPNG.COMDownload-PayPal-Yellow-Payment-Button-PNG-2100x770-2.png"

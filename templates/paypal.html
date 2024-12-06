@@ -1,1 +1,121 @@
-<h3>Welcome to paypal payment</h3>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Store KE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <section id="header">
+        <a href="#"><img class="logo" src="{% static '/images/Logo1.png' %}"></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contacts</a></li>
+                <li><a href="#">Checkout</a></li>
+                <li><a href="#">
+                    <span>3</span>
+                    <i class="fa fa-shopping-bag"></i>
+                </a></li>
+                <li id="dropdown"><a href="" class="active"><i class="fa fa-user"></i><i class="fa fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="#">Login</a>
+                        <a href="#">Register</a>
+                        <a href="" class="active">Refund</a>
+                        <a href="">LogOut</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+
+    <section id="wrapper" class="mpesa paypal">
+        <div class="container">
+            <img src="{% static '/images/paypal.png' %}">
+            {{form.render}}
+            <!-- <button class="normal paypal-button"></button> -->
+        </div>
+        <div class="container summary">
+            <table>
+                <tr>
+                    <td><h3>Order Summary</h3></td>
+                    <td><h3>[4 items]</h3></td>
+                <tr>
+                    <td><strong>Subtotal</strong></td>
+                    <td>Subtotal</td>
+                </tr>
+                <tr>
+                    <td><strong>Shipping</strong></td>
+                    <td>Free</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td>Free</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="{% static '/images/Logo1.png' %}">
+            <h4>Contacts</h4>
+            <p><strong>Address: </strong>42, Nairobi-Luthuri Street</p>
+            <p><strong>Phone: </strong>+254 7 16 562 871/+254 7 16 562 872</p>
+            <p><strong>Hours: </strong>10:00-18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fa fa-facebook"></i>
+                    <i class="fa fa-instagram"></i>
+                    <i class="fa fa-twitter"></i>
+                    <i class="fa fa-linkedin"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Private Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+     
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In </a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App store or Google Play</p>
+            <div class="row">
+                <img src="{% static '/images/googleplay.png' %}">
+                <img src="{% static '/images/gooleapp.png' %}">
+            </div>
+            <p>Secure Payment Gateways</p>
+            <img src="{% static '/images/gateway.JPG' %}">
+        </div>
+
+        <div class="copyright">
+            <p>© 2024. Vickeey etc - HTML CSS Ecommerce Template</p>
+        </div>
+    </footer>
+
+</body>
+</html>

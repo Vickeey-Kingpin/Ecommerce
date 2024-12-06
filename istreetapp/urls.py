@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from . views import (
     login,register,logout,add_to_cart, CartView,add_single_to_cart,remove_single_from_cart,
     HomeView, ProductView, ShopView,BlogView,BlogDetailView,remove_item_from_cart,
-    CheckOutView,TestimonialView, aboutview, RefundView, MpesaPaymentView, paypal
+    CheckOutView,TestimonialView, aboutview, RefundView, MpesaPaymentView, PaypalPaymentView
 )
 
 urlpatterns = [
@@ -27,5 +27,5 @@ urlpatterns = [
     path('refund/',RefundView.as_view(),name='refund'),
 
     path('mpesa/',MpesaPaymentView.as_view(),name='mpesa'),
-    path('paypal/',paypal,name='paypal'),
+    path('paypal/',PaypalPaymentView.as_view(),name='paypal'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Item,CartItem,Order,Blog,Address,Payment,Testimonial,Refund
+from . models import Item,CartItem,Order,Blog,Address,Payment,Testimonial,Refund,Staff
 
 
 # Register your models here.
@@ -23,6 +23,9 @@ class orderPayment(admin.ModelAdmin):
     list_display = ['user','payment_option','amount_paid','is_paid','payment_number']
     actions = [confirm_payment]
 
+class refundModel(admin.ModelAdmin):
+    list_display = ['order','email','accepted']
+
 admin.site.register(Item)
 admin.site.register(CartItem)
 admin.site.register(Order,orderModel)
@@ -30,5 +33,6 @@ admin.site.register(Blog)
 admin.site.register(Address,addressModel)
 admin.site.register(Payment,orderPayment)
 admin.site.register(Testimonial)
-admin.site.register(Refund)
+admin.site.register(Refund,refundModel)
+admin.site.register(Staff)
 

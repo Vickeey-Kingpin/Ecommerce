@@ -1098,3 +1098,22 @@ footer .copyright p{
 #wrapper.mpesa .summary table td h3{
     font-size: 20px;
 }
+/* Paypal */
+#wrapper.paypal .paypal-button{
+    background: #6CB4EE;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+#wrapper.paypal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#wrapper.mpesa .summary{
+    margin-top: 10px;
+}
+#wrapper.paypal img{
+    width: 200px;
+    height: 100px;
+    margin: auto;
+}
